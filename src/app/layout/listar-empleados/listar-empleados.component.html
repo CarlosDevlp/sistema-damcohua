@@ -1,0 +1,47 @@
+<div class="card mb-3 listar-empleados">
+  <div class="card-header">
+      
+      <span class="panel-title-text" style="font-size:1.6rem">Lista de empleados</span>
+      <button class="btn btn-primary float-right" [routerLink]="['/mantener-empleado']">
+          Agregar <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+  
+  </div>
+  <div class="card-body tabla-empleados">
+      <app-custom-datatable #datatable>
+          <thead>
+              <tr>
+                  <th>Código</th>
+                  <th>Foto</th>
+                  <th>Nombre completo</th>
+                  <th>Nº Identificación</th>
+                  <th>Teléfonos</th>
+                  <th>Email</th>
+                  <th>Username</th>
+                  <th>Rol</th>
+                  <th>Acciones</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let usuario of usuarios">
+                  <th scope="row">{{usuario.empleado.empleadoId}}</th>
+                  <td><img [src]="usuario.empleado.fotoAdjunto" class="foto-empleado" alt=""></td>
+                  <td>{{usuario.empleado.getNombreCompleto()}}</td>
+                  <td>{{usuario.empleado.nroIdentificacion}}</td>
+                  <td>{{(usuario.empleado.telefonos)}}</td>
+                  <td>{{(usuario.empleado.email)}}</td>
+                  <td>{{(usuario.username)}}</td>
+                  <td>{{obtenerTipoEmpleadoNombre(usuario.empleado)}}</td>
+                  <td>
+                      <button class="btn btn-success btn-edit" (click)="seleccionarEmpleadoAEditar(usuario)">
+                          <i class="fa fa-pencil" aria-hidden="true"></i>
+                      </button>&nbsp;
+                      <button class="btn btn-danger btn-remove" (click)="eliminarEmpleado(usuario.empleado)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                  </td>
+              </tr>
+          </tbody>
+      </app-custom-datatable>
+  </div>
+</div>

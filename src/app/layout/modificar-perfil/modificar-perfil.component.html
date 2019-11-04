@@ -1,0 +1,68 @@
+<div class="modificar-perfil">
+    <div class="card mb-3">
+        <div class="card-header">
+          <span class="panel-title-text" style="font-size:1.6rem">Ver Perfil</span>
+        </div>
+        <div class="card-body table-responsive">
+          <form class="mantener-usuario-form" [formGroup]="mantenerUsuarioForm" role="form" (ngSubmit)="mantenerUsuario(mantenerUsuarioForm.value)">
+            <div class="form-content">
+                <!--datos de empleado-->
+                <fieldset>
+                    <legend>Datos de empleado</legend>
+                    <div class="form-group">
+                        <app-image-input-selector label="Foto de perfil:" [imgURL]="usuarioActual.empleado.fotoAdjunto" (onSelectedFile)="fotoSeleccionada($event)"></app-image-input-selector>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Nombre completo" disabled [value]="usuarioActual.empleado.getNombreCompleto()" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Fecha de nacimiento" disabled [value]="usuarioActual.empleado.fechaNacimiento" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Rol" disabled [value]="usuarioTipoEmpleado" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Email" disabled [value]="usuarioActual.empleado.email" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Teléfono" disabled [value]="usuarioActual.empleado.telefonos" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Tipo de documento" disabled [value]="usuarioTipoDocumento" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Nro Identificación" disabled [value]="usuarioActual.empleado.nroIdentificacion" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Genero" disabled [value]="usuarioGenero" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="País" disabled [value]="usuarioActual.empleado.pais" >
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Provincia" disabled [value]="usuarioActual.empleado.departamento" >
+                    </div>
+                    <div class="form-group">
+                        <textarea [value]="usuarioActual.empleado.direccion" placeholder="Dirección" disabled class="form-control" rows="3"></textarea>
+                    </div>
+                </fieldset>
+
+                <!--datos de acceso-->
+                <fieldset>
+                    <legend>Datos de acceso</legend>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" disabled placeholder="Nombre de usuario" [value]="usuarioActual.username" >
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control input-underline input-lg" placeholder="Contraseña" formControlName="password" >
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control input-underline input-lg" placeholder="Repetir contraseña" formControlName="passwordRepeat">
+                    </div>
+                </fieldset>
+              </div>
+              <button class="btn btn-primary btn-submit float-right " [disabled]="mantenerUsuarioForm.invalid">Actualizar</button>
+          </form>
+        </div> 
+    </div>
+  </div>

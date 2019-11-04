@@ -1,0 +1,5 @@
+<div class="image-input-selector-wrapper">
+  <img class="img-preview" [src]="imgURL" *ngIf="imgURL">
+  <label>{{label}}</label>
+  <input #fotoPicker type="file" accept='image/jpg, image/png' (change)="preview(fotoPicker.files)" />
+</div>

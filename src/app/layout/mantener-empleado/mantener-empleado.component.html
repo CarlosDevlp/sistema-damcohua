@@ -1,0 +1,101 @@
+<div class="modificar-empleado">
+  <div class="card mb-3">
+      <div class="card-header">
+        <span class="panel-title-text" style="font-size:1.6rem">{{tituloFormulario}}</span>
+      </div>
+      <div class="card-body table-responsive">
+        <form class="mantener-empleado-form" [formGroup]="mantenerEmpleadoForm" role="form" (ngSubmit)="mantenerEmpleado(mantenerEmpleadoForm.value)">
+            <div class="form-content">
+              <div class="form-group d-flex justify-content-center">
+                  <app-image-input-selector label="Foto:" [imgURL]="empleadoActual.fotoAdjunto" (onSelectedFile)="fotoSeleccionada($event)"></app-image-input-selector>
+              </div>
+
+              <div class="d-flex flex-wrap justify-content-between">
+                  <div class="form-group col-12 col-md-3">
+                      <input type="text" class="form-control input-underline input-lg" placeholder="Nombres"  formControlName="nombres" >
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                      <input type="text" class="form-control input-underline input-lg" placeholder="Apellido Paterno" formControlName="apellidoPaterno" >
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                      <input type="text" class="form-control input-underline input-lg" placeholder="Apellido Materno" formControlName="apellidoMaterno" >
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <input type="date" class="form-control input-underline input-lg" placeholder="Fecha de nacimiento"  [value]="empleadoActual.fechaNacimiento" >
+              </div>
+              
+              <div class="form-group">
+                  <input type="text" class="form-control input-underline input-lg" placeholder="Email"    formControlName="email" >
+              </div>
+              
+              <div class="form-group">
+                  <input type="text" class="form-control input-underline input-lg" placeholder="Teléfono" formControlName="telefonos" >
+              </div>
+
+              <div class="form-group">
+                <select formControlName="genero" class="form-control">
+                    <option value="" hidden>Genero</option>
+                    <option [value]="genero.id" *ngFor="let genero of generos">{{genero.nombre}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                  <select formControlName="tipoDeDocumento" class="form-control">
+                      <option value="" hidden>Tipo de documento</option>
+                      <option [value]="tipoDeDocumento.id" *ngFor="let tipoDeDocumento of tiposDocumento">{{tipoDeDocumento.nombre}}</option>
+                  </select>
+              </div>
+                
+              <div class="form-group">
+                  <input type="text" class="form-control input-underline input-lg" placeholder="Nro Identificación"  formControlName="nroIdentificacion" >
+              </div>
+              
+              <div class="form-group">
+                  <input type="text" class="form-control input-underline input-lg" placeholder="País"  formControlName="pais" >
+              </div>
+
+              <div class="form-group">
+                  <input type="text" class="form-control input-underline input-lg" placeholder="Provincia" formControlName="departamento" >
+              </div>
+
+              <div class="form-group">
+                  <textarea formControlName="direccion" placeholder="Dirección"  class="form-control" rows="3"></textarea>
+              </div>
+
+              <div class="form-group">
+                    <select formControlName="tipoEmpleado" class="form-control">
+                        <option value="" hidden>Tipo de empleado</option>
+                        <option [value]="tipoEmpleado.id" *ngFor="let tipoEmpleado of tiposEmpleado">{{tipoEmpleado.nombre}}</option>
+                    </select>
+              </div>
+
+              <div class="form-group checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="empleadoTieneUsuario" [ngModelOptions]="{standalone: true}"> Tiene Usuario
+                </label>
+              </div>
+
+                <!--datos de acceso-->
+                <fieldset *ngIf="empleadoTieneUsuario">
+                    <legend>Datos de acceso</legend>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline input-lg" disabled placeholder="Nombre de usuario">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control input-underline input-lg" placeholder="Contraseña" >
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control input-underline input-lg" placeholder="Repetir contraseña">
+                    </div>
+                </fieldset>
+            </div>
+
+            <button class="btn btn-primary btn-submit float-right " [disabled]="mantenerEmpleadoForm.invalid">{{tituloBotonSubmit}}</button>
+        </form>
+      </div> 
+  </div>
+</div>

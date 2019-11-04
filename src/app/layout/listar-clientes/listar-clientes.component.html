@@ -1,0 +1,45 @@
+<div class="card mb-3 listar-clientes">
+    <div class="card-header">
+        
+        <span class="panel-title-text" style="font-size:1.6rem">Lista de clientes</span>
+        <button class="btn btn-primary float-right" [routerLink]="['/mantener-cliente']">
+            Agregar <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+    
+    </div>
+    <div class="card-body tabla-clientes">
+        <app-custom-datatable #datatable>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Foto</th>
+                    <th>Nombre completo</th>
+                    <th>Tomó examen</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cliente of clientes">
+                    <th scope="row">{{cliente.id}}</th>
+                    <td><img [src]="cliente.fotoAdjunto" class="foto-cliente" alt=""></td>
+                    <td>{{cliente.getNombreCompleto()}}</td>
+                    <td>{{(cliente.haTomadoExamen()?'Sí':'No')}}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-edit" placement="bottom" ngbTooltip="Examen de manejo" (click)=" seleccionarClienteParaEditarExamenConduccion(cliente)">
+                            <i class="fa fa-car" aria-hidden="true"></i>
+                        </button>&nbsp;
+                        <button type="button" class="btn btn-danger btn-edit" placement="bottom" ngbTooltip="Ficha médica" (click)=" seleccionarClienteParaMantenerFichaMedica(cliente)">
+                            <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                        </button>&nbsp;
+                        <button class="btn btn-success btn-edit" (click)=" seleccionarClienteAEditar(cliente)">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </button>&nbsp;
+                        <button class="btn btn-danger btn-remove" (click)="eliminarCliente(cliente)">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </app-custom-datatable>
+    </div>
+</div>

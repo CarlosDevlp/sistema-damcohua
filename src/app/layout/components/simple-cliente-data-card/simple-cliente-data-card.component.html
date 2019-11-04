@@ -1,0 +1,18 @@
+<div class="simple-cliente-data-card">
+  <fieldset>
+    <legend>Datos de cliente</legend>
+    <div class="form-group">
+        <input type="text" disabled class="form-control input-underline input-lg" placeholder="Nombre completo"  [value]="cliente.getNombreCompleto()" >
+    </div>
+
+    <div class="form-group">
+        <input type="text" disabled class="form-control input-underline input-lg" placeholder="Fecha de nacimiento"  [value]="cliente.fechaNacimiento" >
+    </div>
+    <div class="form-group">
+        <input type="text" disabled class="form-control input-underline input-lg" placeholder="Email"  [value]="cliente.email" >
+    </div>
+    <div class="form-group">
+        <input type="text" disabled class="form-control input-underline input-lg" placeholder="Teléfono"  [value]="cliente.telefonos" >
+    </div>
+  </fieldset>
+</div>

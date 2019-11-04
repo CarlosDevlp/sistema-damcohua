@@ -1,0 +1,26 @@
+.modal-dialog-velo.show{
+    display: initial;
+}
+.modal-dialog-velo{
+    display: none;
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    .dialog{
+        background:white;
+        color:black;
+        padding:10px;
+        position: absolute;
+        top:50%;
+        left:50%;
+        min-width: 350px;
+        transform: translate(-50%,-50%);
+        border-radius: 15px;
+        .dialog-body{
+            text-align: center;
+        }
+    }
+}

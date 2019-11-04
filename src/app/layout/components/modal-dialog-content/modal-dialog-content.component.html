@@ -1,0 +1,16 @@
+<div class="modal-dialog-velo" [ngClass]="{'show':shouldShow}">
+  <div class="dialog">
+    <div class="dialog-body">
+      <h4 class="dialog-title">{{titulo}}</h4>
+      <p>{{mensaje}}</p> 
+      <!--controles-->
+      <div *ngIf="isYesNoForm; else controlPorDefecto" class="yesNoControls">
+        <button class="btn btn-primary" (click)="no()">No</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" (click)="yes()">Sí</button>
+      </div>
+      <ng-template #controlPorDefecto>
+        <button class="btn btn-primary" (click)="ok()">Ok</button>
+      </ng-template>
+    </div>
+  </div>  
+</div>
