@@ -25,11 +25,11 @@
               </div>
               
               <div class="form-group">
-                  <input type="date" class="form-control input-underline input-lg" placeholder="Fecha de nacimiento"  [value]="empleadoActual.fechaNacimiento" >
+                  <input type="date" class="form-control input-underline input-lg" placeholder="Fecha de nacimiento"  formControlName="fechaNacimiento" >
               </div>
               
               <div class="form-group">
-                  <input type="text" class="form-control input-underline input-lg" placeholder="Email"    formControlName="email" >
+                  <input type="email" class="form-control input-underline input-lg" placeholder="Email"    formControlName="email" >
               </div>
               
               <div class="form-group">
@@ -38,15 +38,15 @@
 
               <div class="form-group">
                 <select formControlName="genero" class="form-control">
-                    <option value="" hidden>Genero</option>
+                    <option value="-1" hidden>Genero</option>
                     <option [value]="genero.id" *ngFor="let genero of generos">{{genero.nombre}}</option>
                 </select>
               </div>
 
               <div class="form-group">
-                  <select formControlName="tipoDeDocumento" class="form-control">
-                      <option value="" hidden>Tipo de documento</option>
-                      <option [value]="tipoDeDocumento.id" *ngFor="let tipoDeDocumento of tiposDocumento">{{tipoDeDocumento.nombre}}</option>
+                  <select formControlName="tipoDocumento" class="form-control">
+                      <option value="-1" hidden>Tipo de documento</option>
+                      <option [value]="tipoDocumento.id" *ngFor="let tipoDocumento of tiposDocumento">{{tipoDocumento.nombre}}</option>
                   </select>
               </div>
                 
@@ -59,7 +59,7 @@
               </div>
 
               <div class="form-group">
-                  <input type="text" class="form-control input-underline input-lg" placeholder="Provincia" formControlName="departamento" >
+                  <input type="text" class="form-control input-underline input-lg" placeholder="Provincia" formControlName="provincia" >
               </div>
 
               <div class="form-group">
@@ -68,28 +68,23 @@
 
               <div class="form-group">
                     <select formControlName="tipoEmpleado" class="form-control">
-                        <option value="" hidden>Tipo de empleado</option>
+                        <option value="-1" hidden>Tipo de empleado</option>
                         <option [value]="tipoEmpleado.id" *ngFor="let tipoEmpleado of tiposEmpleado">{{tipoEmpleado.nombre}}</option>
                     </select>
               </div>
 
-              <div class="form-group checkbox">
-                <label>
-                    <input type="checkbox" [(ngModel)]="empleadoTieneUsuario" [ngModelOptions]="{standalone: true}"> Tiene Usuario
-                </label>
-              </div>
 
                 <!--datos de acceso-->
-                <fieldset *ngIf="empleadoTieneUsuario">
+                <fieldset>
                     <legend>Datos de acceso</legend>
                     <div class="form-group">
-                        <input type="text" class="form-control input-underline input-lg" disabled placeholder="Nombre de usuario">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Nombre de usuario" formControlName="username">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" placeholder="Contraseña" >
+                        <input type="password" class="form-control input-underline input-lg" placeholder="Contraseña" formControlName="password">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" placeholder="Repetir contraseña">
+                        <input type="password" class="form-control input-underline input-lg" placeholder="Repetir contraseña" formControlName="passwordRepeat">
                     </div>
                 </fieldset>
             </div>

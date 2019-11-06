@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TipoEmpleado } from '../models/tipo_empleado';
 
 import { STRINGS_VALUES } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Empleado } from '../models/empleado';
 import { Usuario } from '../models/usuario';
 
@@ -27,7 +27,7 @@ export class EmpleadosService {
    */
   public solicitarEmpleados():Promise<any>{
     return new Promise<any>(async (resolve,reject)=>{
-      let errorMessage='Error de servidor. Inténtelo más tarde';
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
       try{
         let response:any=await this.httpClient.get(STRINGS_VALUES.API_EMPLEADOS).toPromise();
         if(response.status=='ok'){
@@ -40,6 +40,51 @@ export class EmpleadosService {
             usuarios.push(usuario);
           }
           return resolve(usuarios);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  public registrarEmpleado(formData:FormData):Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.post(STRINGS_VALUES.API_EMPLEADOS,formData).toPromise();
+        if(response.status=='ok'){
+          return resolve(response);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  public eliminarEmpleado(idUsuario:number):Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.delete(STRINGS_VALUES.API_EMPLEADOS_ELIMINAR(idUsuario)).toPromise();
+        if(response.status=='ok'){
+          return resolve(response);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  public actualizarEmpleado(usuarioId:number, formData:FormData,params:HttpParams):Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.post(STRINGS_VALUES.API_USUARIOS_EMPLEADOS_ACTUALIZAR_DATOS(usuarioId),formData,{params}).toPromise();
+        if(response.status=='ok'){
+          return resolve(response);
         }else{
           errorMessage=response.message;
         }

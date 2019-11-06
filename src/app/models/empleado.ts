@@ -2,9 +2,10 @@ import { TipoEmpleado } from './tipo_empleado';
 import { TipoDocumento } from './tipo_documentos';
 import { Genero } from './genero';
 import { Persona } from './persona';
+import { STRINGS_VALUES } from 'src/environments/environment';
 
 export class Empleado extends Persona{
-    public tipoEmpleadoId:number;
+    public tipoEmpleadoId:number=-1;
     public empleadoId:number;
     constructor(id, 
                 nombres:string,
@@ -43,6 +44,6 @@ export class Empleado extends Persona{
     }
 
     public static getEmpty(){
-        return new Empleado(-1,'','','',TipoDocumento.getEmpty(),Genero.getEmpty(),'','','','','','','','','','',TipoEmpleado.getEmpty());
+        return new Empleado(-1,'','','',TipoDocumento.getEmpty(),Genero.getEmpty(),'','','','','','','','',STRINGS_VALUES.FOTO_PLACEHOLDER,'',TipoEmpleado.getEmpty());
     }
 }

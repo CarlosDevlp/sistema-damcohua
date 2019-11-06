@@ -6,6 +6,7 @@ import { TipoUsuario } from '../models/tipo_usuario';
 import { HttpClient } from '@angular/common/http';
 import { STRINGS_VALUES } from 'src/environments/environment';
 import { GrupoSanguineo } from '../models/grupo_sanguineo';
+import { ClaseCategoria } from '../models/clase_categoria';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,8 @@ export class TiposOpcionesService {
   private generos:Array<Genero>;
   private tipoUsuarios:Array<TipoUsuario>;
   private gruposSanguineo:Array<GrupoSanguineo>;
+  private clasesCategorias:Array<ClaseCategoria>
+
   constructor(private httpClient:HttpClient) {
     this.inicializar();
   }
@@ -26,6 +29,7 @@ export class TiposOpcionesService {
     this.generos=[];
     this.tipoUsuarios=[];
     this.gruposSanguineo=[];
+    this.clasesCategorias=[];
   }
 
 
@@ -93,6 +97,26 @@ export class TiposOpcionesService {
         }
       }
       resolve(this.tiposEmpleado);
+    });
+  }
+
+  public obtenerClasesCategorias():Promise<any>{
+    return new Promise<any>(async (resolve, reject)=>{
+      if(this.clasesCategorias.length==0){
+        try{
+          let response:any=await this.httpClient.get(STRINGS_VALUES.API_CLASES_CATEGORIA).toPromise();
+          if(response.status=='ok'){
+            this.clasesCategorias=[];
+            let {data}=response;
+            for(let i in data){
+              this.clasesCategorias.push(new ClaseCategoria(data[i].id, data[i].nombre));
+            }
+          }
+        }catch(err){
+          return reject('No se pudieron obtener las clases categorias');
+        }
+      }
+      resolve(this.clasesCategorias);
     });
   }
 

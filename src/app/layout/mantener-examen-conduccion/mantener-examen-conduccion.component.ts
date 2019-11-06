@@ -42,19 +42,27 @@ export class MantenerExamenConduccionComponent implements OnInit {
 
   async solicitarTiposOpciones(){
     try{
-      this.clasesCategorias=[];
-      //this.clasesCategorias=await this.tiposOpcionesService.obtenerGruposSanguineos();
+      this.clasesCategorias=await this.tiposOpcionesService.obtenerClasesCategorias();
     }catch(error){
       console.log(MantenerExamenConduccionComponent.LOG_TAG,error);
     }
   }
 
   setearValidadorDeFormulario(){
-    //let {,observaciones,fechaEvaluacion}=this.evaluacionconduccionActual;
+    let {claseCategoria,observaciones,servicioSolicitado,fechaEvaluacion,restricciones, nroReciboOperacion}=this.evaluacionconduccionActual;
     let validadores:any={
-      
+      claseCategoria:[claseCategoria],
+      observaciones:[observaciones],
+      servicioSolicitado:[servicioSolicitado],
+      fechaEvaluacion:[fechaEvaluacion],
+      restricciones:[restricciones],
+      nroReciboOperacion:[nroReciboOperacion]
     };
     this.mantenerEvaluacionConduccionForm=this.formBuilder.group(validadores);
   }
 
+
+  mantenerEvaluacionConduccion(){
+
+  }
 }

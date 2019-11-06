@@ -5,18 +5,18 @@
         </div>
         <div class="card-body table-responsive">
           <app-simple-cliente-data-card [cliente]="clienteActual"></app-simple-cliente-data-card>
-          <form class="mantener-fichamedica-form" [formGroup]="mantenerFichaMedicaForm" role="form" (ngSubmit)="mantenerFichaMedica(mantenerFichaMedicaForm.value)">
+          <form class="mantener-fichamedica-form" [formGroup]="mantenerEvaluacionConduccionForm" role="form" (ngSubmit)="mantenerEvaluacionConduccion(mantenerEvaluacionConduccionForm.value)">
               <div class="form-content">
                 <fieldset>
                   <legend>Datos de examen</legend>
                   
                   <div class="d-flex flex-wrap justify-content-between">
                       <div class="form-group col-12 col-md-3">
-                          <input type="text" class="form-control input-underline input-lg" placeholder="Nro Operación"  formControlName="nroOperacion" >
+                          <input type="text" class="form-control input-underline input-lg" placeholder="Nro Operación"  formControlName="nroReciboOperacion" >
                       </div>
   
                       <div class="form-group col-12 col-md-4">
-                          <input type="text" class="form-control input-underline input-lg" placeholder="Servicio solicitado"  formControlName="servicio" >
+                          <input type="text" class="form-control input-underline input-lg" placeholder="Servicio solicitado"  formControlName="servicioSolicitado" >
                       </div>
   
                       <div class="form-group col-12 col-md-4">
@@ -51,7 +51,7 @@
                 
                 </fieldset>
               </div>
-              <button class="btn btn-primary btn-submit float-right " [disabled]="mantenerFichaMedicaForm.invalid">Guardar</button>
+              <button class="btn btn-primary btn-submit float-right " [disabled]="mantenerEvaluacionConduccionForm.invalid">Guardar</button>
           </form>
         </div> 
     </div>

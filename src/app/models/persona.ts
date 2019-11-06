@@ -2,8 +2,8 @@ import { TipoDocumento } from '../models/tipo_documentos';
 import { Genero } from '../models/genero';
 
 export class Persona{
-    public tipoDocumentoId:number;
-    public generoId:number;
+    public tipoDocumentoId:number=-1;
+    public generoId:number=-1;
 
     constructor(public id, 
                 public nombres:string,
