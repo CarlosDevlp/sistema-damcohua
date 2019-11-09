@@ -67,6 +67,64 @@ export class EmpleadosService {
     });
   }
 
+  /**
+   * Obtener toda la lista de profesores
+   */
+  public solicitarProfesores():Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.get(STRINGS_VALUES.API_EMPLEADOS_PROFESORES).toPromise();
+        if(response.status=='ok'){
+          let empleados=[];
+          let empleado:Empleado;
+          let {data}=response;
+          for(let i in data){
+            empleado=Empleado.getEmpty();
+            empleado.empleadoId=data[i].empleados_id;
+            empleado.nombres=data[i].nombres;
+            empleado.apellidoPaterno=data[i].apellido_paterno;
+            empleado.apellidoMaterno=data[i].apellido_materno;
+            empleados.push(empleado);
+          }
+          return resolve(empleados);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  /**
+   * Obtener toda la lista de doctores
+   */
+  public solicitarDoctores():Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.get(STRINGS_VALUES.API_EMPLEADOS_DOCTORES).toPromise();
+        if(response.status=='ok'){
+          let empleados=[];
+          let empleado:Empleado;
+          let {data}=response;
+          for(let i in data){
+            empleado=Empleado.getEmpty();
+            empleado.empleadoId=data[i].empleados_id;
+            empleado.nombres=data[i].nombres;
+            empleado.apellidoPaterno=data[i].apellido_paterno;
+            empleado.apellidoMaterno=data[i].apellido_materno;
+            empleados.push(empleado);
+          }
+          return resolve(empleados);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
   public registrarEmpleado(formData:FormData):Promise<any>{
     return new Promise<any>(async (resolve,reject)=>{
       let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;

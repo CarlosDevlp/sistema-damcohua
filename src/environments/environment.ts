@@ -15,6 +15,7 @@ export const environment = {
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 export const API_BASE_URL="http://localhost:8888/damcohua-ws/public/api";
+export const API_MTC_BASE_URL="http://localhost:8888/damcohua-ws/public/api/mtc";
 export const APP_ID="com.titandevs.sistema-damcohua";
 export const STRINGS_VALUES={
   "APP_NAME":"Sistema Damcohua",/**Sistema Damcohua */
@@ -37,6 +38,8 @@ export const STRINGS_VALUES={
   "API_GRUPOS_SANGUINEOS":API_BASE_URL+'/grupos-sanguineos',
 
   //empleados
+  "API_EMPLEADOS_DOCTORES":API_BASE_URL+'/empleados?rol=2',
+  "API_EMPLEADOS_PROFESORES":API_BASE_URL+'/empleados?rol=6',
   "API_EMPLEADOS":API_BASE_URL+'/empleados/usuarios#formdata',
   "API_EMPLEADOS_ELIMINAR":(id:number)=>{
     return API_BASE_URL+'/empleados/usuarios/'+id+'#formdata';
@@ -60,6 +63,9 @@ export const STRINGS_VALUES={
   "API_CLIENTE":(id:number)=>{
     return API_BASE_URL+'/clientes/'+id;
   },
+  "API_CLIENTE_ELIMINAR":(id:number)=>{
+    return API_BASE_URL+'/clientes/'+id;
+  },
   "API_CLIENTES_CONTAR":API_BASE_URL+'/clientes/count',
 
   //ficha médica
@@ -71,6 +77,17 @@ export const STRINGS_VALUES={
   "API_EXAMEN_REGLAS":(id:number)=>{
     return API_BASE_URL+'/clientes/'+id+'/examenes-reglas#formdata';
   },
+
+  //MTC
+  //ficha médica
+  "API_MTC_FICHA_MEDICA":(id:number)=>{
+    return API_MTC_BASE_URL+'/fichas-medicas/'+id;
+  },
+  //ficha médica
+  "API_MTC_EXAMEN_REGLAS":(id:number)=>{
+    return API_MTC_BASE_URL+'/examenes-reglas/'+id;
+  },
+
 
   //Local Storage
   "STORAGE_TOKEN": APP_ID+'.token',

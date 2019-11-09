@@ -11,16 +11,23 @@
                 <legend>Datos de ficha médica</legend>
                 
                 <div class="d-flex flex-wrap justify-content-between">
-                    <div class="form-group col-12 col-md-3">
-                        <input type="text" class="form-control input-underline input-lg" placeholder="Id"  formControlName="codigo" >
+                    <div class="form-group col-12 col-md-2">
+                        <input type="text" class="form-control input-underline input-lg" placeholder="Id"  formControlName="codigo" disabled>
                     </div>
 
                     <div class="form-group col-12 col-md-4">
                         <input type="text" class="form-control input-underline input-lg" placeholder="Tipo resultado"  formControlName="tipoResultado" >
                     </div>
 
-                    <div class="form-group col-12 col-md-4">
+                    <div class="form-group col-12 col-md-3">
                         <input type="date" class="form-control input-underline input-lg" placeholder="Fecha de evaluación"  formControlName="fechaEvaluacion" >
+                    </div> 
+
+                    <div class="form-group col-12 col-md-3">
+                      <select formControlName="doctor" class="form-control">
+                          <option value="-1" hidden>Doctor a cargo</option>
+                          <option [value]="doctor.empleadoId" *ngFor="let doctor of doctores">{{doctor.getNombreCompleto()}}</option>
+                      </select>
                     </div> 
                 </div>
                 
@@ -28,7 +35,7 @@
 
                   <div class="form-group col-12 col-md-3">
                     <select formControlName="grupoSanguineo" class="form-control">
-                        <option value="" hidden>Grupo Sanguineo</option>
+                        <option value="-1" hidden>Grupo Sanguineo</option>
                         <option [value]="grupoSanguineo.id" *ngFor="let grupoSanguineo of gruposSanguineo">{{grupoSanguineo.nombre}}</option>
                     </select>
                   </div>
@@ -37,11 +44,7 @@
                       <input type="text" class="form-control input-underline input-lg" placeholder="Tipo de examen"  formControlName="tipoExamen" >
                   </div>
 
-                  <fieldset class="form-group col-12 col-md-4">
-                      <label>Adjunto</label>
-                      <input type="file" class="form-control-file">
-                  </fieldset>
-
+                  <app-file-input-selector class="col-12 col-md-4" label="Adjunto:" ver-file-label="Ver adjunto" [fileURL]="fichamedicaActual.adjuntoUrl" (onSelectedFile)="archivoSeleccionado($event)"></app-file-input-selector>
                 </div>
                 
 
@@ -51,6 +54,7 @@
               
               </fieldset>
             </div>
+            <button class="btn btn-primary " type="button" [disabled]="mantenerFichaMedicaForm.invalid" (click)="enviarAlMTC(mantenerFichaMedicaForm.value)">Enviar al MTC</button>
             <button class="btn btn-primary btn-submit float-right " [disabled]="mantenerFichaMedicaForm.invalid">Guardar</button>
         </form>
       </div> 

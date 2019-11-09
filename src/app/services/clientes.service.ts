@@ -204,16 +204,48 @@ export class ClientesService {
     });
   }
 
-  public eliminarCliente(id):Promise<any>{
-    return new Promise<any>((resolve, reject)=>{
-      
-      for(let i=0;i<this.clientes.length;i++){
-        if(this.clientes[i].id==id){
-          this.clientes.splice(i,1);
-          resolve(this.clientes);
+  public eliminarCliente(id:number):Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.delete(STRINGS_VALUES.API_CLIENTE_ELIMINAR(id)).toPromise();
+        if(response.status=='ok'){
+          return resolve(response);
+        }else{
+          errorMessage=response.message;
         }
-      }
-      
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  public enviarAlMTCFichaMedica(id:number,data:string):Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.post(STRINGS_VALUES.API_MTC_FICHA_MEDICA(id),{data}).toPromise();
+        if(response.status=='ok'){
+          return resolve(response);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  public enviarAlMTCExamenReglas(id:number,data:string):Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.post(STRINGS_VALUES.API_MTC_EXAMEN_REGLAS(id),{data}).toPromise();
+        if(response.status=='ok'){
+          return resolve(response);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
     });
   }
 

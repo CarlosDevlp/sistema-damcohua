@@ -8,6 +8,7 @@ import { SeguridadService } from 'src/app/services/seguridad.service';
 import { Usuario } from 'src/app/models/usuario';
 import { STRINGS_VALUES } from 'src/environments/environment';
 import { AlertDialogService } from 'src/app/services/alert-dialog.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-listar-clientes',
@@ -21,7 +22,7 @@ export class ListarClientesComponent implements OnInit, OnDestroy {
   private mostrarFichaMedicaBoton=true;
   private subscription:Subscription;
 
-  constructor(private alertDialogService:AlertDialogService,private clienteService:ClientesService, private seguridadService:SeguridadService ,private router:Router) { }
+  constructor(private location:Location, private alertDialogService:AlertDialogService,private clienteService:ClientesService, private seguridadService:SeguridadService ,private router:Router) { }
 
   ngOnInit() {
     this.clienteService.solicitarClientes().then((clientes:Array<Cliente>)=>{
@@ -73,22 +74,18 @@ export class ListarClientesComponent implements OnInit, OnDestroy {
     this.alertDialogService.openYesNo('','Desea eliminar todos los datos de '+cliente.getNombreCompleto())
     .then(/*yes*/ async ()=>{
       try{
-        /*let response=await this.empleadoService.eliminarEmpleado(usuario.id);
+        let response=await this.clienteService.eliminarCliente(cliente.clienteId);
         let {message}=response;
         this.alertDialogService.open('',message, 
-        /*onclick ()=>{
+        /*onclick*/ ()=>{
           location.reload();
-        });*/
+        });
       }catch(error){
         this.alertDialogService.open('',error);
       }
       
     })
     .catch(/*no*/ ()=>{});
-
-    this.clienteService.eliminarCliente(cliente.id).then(()=>{
-
-    });
   }
 
 }

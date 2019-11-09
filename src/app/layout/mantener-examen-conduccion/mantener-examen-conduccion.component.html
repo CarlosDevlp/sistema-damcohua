@@ -11,7 +11,7 @@
                   <legend>Datos de examen</legend>
                   
                   <div class="d-flex flex-wrap justify-content-between">
-                      <div class="form-group col-12 col-md-3">
+                      <div class="form-group col-12 col-md-2">
                           <input type="text" class="form-control input-underline input-lg" placeholder="Nro Operación"  formControlName="nroReciboOperacion" >
                       </div>
   
@@ -19,8 +19,15 @@
                           <input type="text" class="form-control input-underline input-lg" placeholder="Servicio solicitado"  formControlName="servicioSolicitado" >
                       </div>
   
-                      <div class="form-group col-12 col-md-4">
+                      <div class="form-group col-12 col-md-3">
                           <input type="date" class="form-control input-underline input-lg" placeholder="Fecha de evaluación"  formControlName="fechaEvaluacion" >
+                      </div> 
+                      
+                      <div class="form-group col-12 col-md-3">
+                        <select formControlName="profesor" class="form-control">
+                            <option value="-1" hidden>Profesor a cargo</option>
+                            <option [value]="profesor.empleadoId" *ngFor="let profesor of profesores">{{profesor.getNombreCompleto()}}</option>
+                        </select>
                       </div> 
                   </div>
                   
@@ -48,6 +55,7 @@
                 
                 </fieldset>
               </div>
+              <button class="btn btn-primary " type="button" [disabled]="mantenerEvaluacionConduccionForm.invalid" (click)="enviarAlMTC(mantenerEvaluacionConduccionForm.value)">Enviar al MTC</button>
               <button class="btn btn-primary btn-submit float-right " [disabled]="mantenerEvaluacionConduccionForm.invalid">Guardar</button>
           </form>
         </div> 

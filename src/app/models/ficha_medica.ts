@@ -3,6 +3,7 @@ import { AtencionMedica } from './atencion_medica';
 
 export class FichaMedica{
  public atencionesMedicas:Array<AtencionMedica>;
+ public empleadoId:number=-1;
  constructor(public codigo, 
              public tipoResultado:string,
              public resultado:string,
@@ -10,14 +11,14 @@ export class FichaMedica{
              public tipoExamen:string,
              public observaciones:string,
              public fechaEvaluacion:string,
-             public grupoSanguineoId:string,
+             public grupoSanguineoId:number,
              public grupoSanguineo:GrupoSanguineo=GrupoSanguineo.getEmpty()
              ){
 
  }
 
  public static getEmpty(){
-    return new FichaMedica('','','','','','','','',GrupoSanguineo.getEmpty());
+    return new FichaMedica('','','','','','','',-1,GrupoSanguineo.getEmpty());
  }
 
  setDataFromRequestResponse(data:any){
@@ -27,6 +28,8 @@ export class FichaMedica{
     this.tipoExamen=data.tipo_examen;   
     this.observaciones=data.observaciones;
     this.grupoSanguineoId=data.grupo_sanguineo_id;
+    this.empleadoId=data.empleados_id;
+    this.adjuntoUrl=data.adjunto;
  }
 
 }

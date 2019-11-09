@@ -7,6 +7,8 @@ import { ClientesService } from 'src/app/services/clientes.service';
 import { TiposOpcionesService } from 'src/app/services/tipos-opciones.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertDialogService } from 'src/app/services/alert-dialog.service';
+import { Empleado } from 'src/app/models/empleado';
+import { EmpleadosService } from 'src/app/services/empleados.service';
 
 @Component({
   selector: 'app-mantener-examen-conduccion',
@@ -20,7 +22,8 @@ export class MantenerExamenConduccionComponent implements OnInit {
   private clasesCategorias:Array<ClaseCategoria>;
   private adjuntoFile:File;
   private clienteActual:Cliente;
-  constructor(private alertDialogService:AlertDialogService, private clientesService:ClientesService,private tiposOpcionesService:TiposOpcionesService,private formBuilder: FormBuilder, private router:Router, private route: ActivatedRoute) { }
+  private profesores:Array<Empleado>;
+  constructor(private alertDialogService:AlertDialogService, private clientesService:ClientesService,private tiposOpcionesService:TiposOpcionesService,private empleadosService:EmpleadosService,private formBuilder: FormBuilder, private router:Router, private route: ActivatedRoute) { }
 
 
   ngOnInit() {
@@ -29,6 +32,7 @@ export class MantenerExamenConduccionComponent implements OnInit {
       this.router.navigate(['listar-clientes']);
     }
     this.setearValidadorDeFormulario();
+    this.solitictarProfesores();
     this.solicitarTiposOpciones();
     this.obtenerExamenReglasAEditar();
   }
@@ -43,6 +47,13 @@ export class MantenerExamenConduccionComponent implements OnInit {
     }
   }
 
+  async solitictarProfesores(){
+    try{
+      this.profesores= await this.empleadosService.solicitarProfesores();
+    }catch(e){
+      this.profesores=[];
+    }
+  }
 
   async solicitarTiposOpciones(){
     try{
@@ -53,14 +64,15 @@ export class MantenerExamenConduccionComponent implements OnInit {
   }
 
   setearValidadorDeFormulario(){
-    let {claseCategoriaId,observaciones,servicioSolicitado,fechaEvaluacion,restricciones, nroReciboOperacion}=this.examenReglasActual;
+    let {empleadoId,claseCategoriaId,observaciones,servicioSolicitado,fechaEvaluacion,restricciones, nroReciboOperacion}=this.examenReglasActual;
     let validadores:any={
       claseCategoria:[claseCategoriaId],
       observaciones:[observaciones],
       servicioSolicitado:[servicioSolicitado],
       fechaEvaluacion:[fechaEvaluacion],
       restricciones:[restricciones],
-      nroReciboOperacion:[nroReciboOperacion]
+      nroReciboOperacion:[nroReciboOperacion],
+      profesor:[empleadoId]
     };
     this.mantenerEvaluacionConduccionForm=this.formBuilder.group(validadores);
   }
@@ -73,10 +85,45 @@ export class MantenerExamenConduccionComponent implements OnInit {
     this.adjuntoFile=archivo;
   }
 
-  async mantenerExamenReglas(datos:any){
-    let {nroReciboOperacion,claseCategoria,observaciones,servicioSolicitado,fechaEvaluacion,restricciones}=datos;
+  /**
+   * Enviar data el MTC
+   * @param datos 
+   */
+  async enviarAlMTC(datos:any){
     try{
-      return console.log(MantenerExamenConduccionComponent.LOG_TAG,fechaEvaluacion);
+      let {profesor, nroReciboOperacion,claseCategoria,observaciones,servicioSolicitado,fechaEvaluacion,restricciones}=datos;
+      let {adjuntoUrl}=this.examenReglasActual;
+      let profesorNombreCompleto='';
+      let claseCategoriaNombre='';
+      let clienteNombreCompleto=this.clienteActual.getNombreCompleto();
+      let clienteDNI=this.clienteActual.nroIdentificacion;
+
+      for(let i in this.profesores){
+        if(this.profesores[i].empleadoId==profesor){
+          profesorNombreCompleto=this.profesores[i].getNombreCompleto();
+          break;
+        }
+      }
+
+      for(let i in this.clasesCategorias){
+        if(this.clasesCategorias[i].id==claseCategoria){
+          claseCategoriaNombre=this.clasesCategorias[i].nombre;
+          break;
+        }
+      }
+      
+      let json=JSON.stringify({clienteNombreCompleto, clienteDNI, profesorNombreCompleto, nroReciboOperacion, claseCategoriaNombre, observaciones,servicioSolicitado,fechaEvaluacion,restricciones, adjuntoUrl});
+      let response=await this.clientesService.enviarAlMTCExamenReglas(this.clienteActual.clienteId,json);
+      this.alertDialogService.open('',response.message);
+    }catch(error){
+      this.alertDialogService.open('',error);
+    }
+  }
+
+  async mantenerExamenReglas(datos:any){
+    let {profesor, nroReciboOperacion,claseCategoria,observaciones,servicioSolicitado,fechaEvaluacion,restricciones}=datos;
+    try{
+      //return console.log(MantenerExamenConduccionComponent.LOG_TAG,fechaEvaluacion);
       let formData=new FormData();
       formData.append('servicio_solicitado', servicioSolicitado);
       formData.append('nro_recibo_operacion', nroReciboOperacion);
@@ -84,7 +131,7 @@ export class MantenerExamenConduccionComponent implements OnInit {
       formData.append('restricciones', restricciones);
       formData.append('observaciones', observaciones);
       formData.append('clase_categoria_id', claseCategoria);
-      formData.append('empleados_id', '1');
+      if(profesor!=-1) formData.append('empleados_id', profesor);
       if(this.adjuntoFile!=null){
         formData.append('adjunto',this.adjuntoFile,this.adjuntoFile.name);
       }

@@ -7,6 +7,9 @@ import { FichaMedica } from 'src/app/models/ficha_medica';
 import { GrupoSanguineo } from 'src/app/models/grupo_sanguineo';
 import { Cliente } from 'src/app/models/cliente';
 import { ClientesService } from 'src/app/services/clientes.service';
+import { Empleado } from 'src/app/models/empleado';
+import { AlertDialogService } from 'src/app/services/alert-dialog.service';
+import { MantenerExamenConduccionComponent } from '../mantener-examen-conduccion/mantener-examen-conduccion.component';
 
 @Component({
   selector: 'app-mantener-ficha-medica',
@@ -16,26 +19,38 @@ import { ClientesService } from 'src/app/services/clientes.service';
 export class MantenerFichaMedicaComponent implements OnInit {
   public static LOG_TAG="MantenerFichaMedicaComponent";
   private mantenerFichaMedicaForm:FormGroup;
-  private fichamedicaActual:FichaMedica;
+  private fichamedicaActual:FichaMedica=FichaMedica.getEmpty();
   private gruposSanguineo:Array<GrupoSanguineo>;
+  private adjuntoFile:File;
+  private doctores:Array<Empleado>;
   private clienteActual:Cliente;
-  constructor(private clientesService:ClientesService,private tiposOpcionesService:TiposOpcionesService,private formBuilder: FormBuilder, private router:Router, private route: ActivatedRoute) { }
+  constructor(private clientesService:ClientesService,private empleadosService:EmpleadosService,private tiposOpcionesService:TiposOpcionesService, private alertDialogService:AlertDialogService, private formBuilder: FormBuilder, private router:Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.clienteActual=this.clientesService.clienteSeleccionado;
-    if(this.clienteActual==undefined){
+    if(this.clienteActual==undefined || this.clienteActual.clienteId==-1){
       this.router.navigate(['listar-clientes']);
     }
     this.obtenerFichaMedicaAEditar();
     this.solicitarTiposOpciones();
+    this.solitictarDoctores();
     this.setearValidadorDeFormulario();
   }
 
-  private obtenerFichaMedicaAEditar(){
+  private async obtenerFichaMedicaAEditar(){
     try{
-      this.fichamedicaActual= FichaMedica.getEmpty();
+      this.fichamedicaActual= await this.clientesService.solicitarClienteFichaMedica(this.clienteActual.id);
+      this.setearValidadorDeFormulario();
     }catch(e){
-      this.router.navigate(['listar-clientes']);
+      this.fichamedicaActual=FichaMedica.getEmpty();
+    }
+  }
+
+  async solitictarDoctores(){
+    try{
+      this.doctores= await this.empleadosService.solicitarDoctores();
+    }catch(e){
+      this.doctores=[];
     }
   }
 
@@ -50,20 +65,83 @@ export class MantenerFichaMedicaComponent implements OnInit {
   }
 
   setearValidadorDeFormulario(){
-    let {grupoSanguineoId,observaciones,codigo,tipoResultado,fechaEvaluacion,tipoExamen}=this.fichamedicaActual;
+    let {empleadoId,grupoSanguineoId,observaciones,codigo,tipoResultado,fechaEvaluacion,tipoExamen}=this.fichamedicaActual;
     let validadores:any={
       codigo:[codigo],
       tipoResultado:[tipoResultado],
       fechaEvaluacion:[fechaEvaluacion],
       observaciones:[observaciones],
       grupoSanguineo:[grupoSanguineoId],
-      tipoExamen:[tipoExamen]
+      tipoExamen:[tipoExamen],
+      doctor:[empleadoId]
     };
     this.mantenerFichaMedicaForm=this.formBuilder.group(validadores);
   }
 
-  /**Actualizar o crear los datos de la ficha medica del cliente llenados en el formulario */
-  mantenerFichaMedica(datos:any){
+  /**
+   * Cuando se seleccione un archivo del picker
+   */
+  archivoSeleccionado(archivo:File){
+    this.adjuntoFile=archivo;
+  }
 
+  async enviarAlMTC(datos:any){
+    try{
+      console.log(MantenerFichaMedicaComponent.LOG_TAG,datos);
+      let {tipoResultado, fechaEvaluacion, observaciones, grupoSanguineo, tipoExamen, doctor}=datos;
+      let {adjuntoUrl}=this.fichamedicaActual;
+      let doctorNombreCompleto='';
+      let grupoSanguineoNombre='';
+      let clienteNombreCompleto=this.clienteActual.getNombreCompleto();
+      let clienteDNI=this.clienteActual.nroIdentificacion;
+
+      for(let i in this.doctores){
+        if(this.doctores[i].empleadoId==doctor){
+          doctorNombreCompleto=this.doctores[i].getNombreCompleto();
+          break;
+        }
+      }
+
+      for(let i in this.gruposSanguineo){
+        if(this.gruposSanguineo[i].id==grupoSanguineo){
+          grupoSanguineoNombre=this.gruposSanguineo[i].nombre;
+          break;
+        }
+      }
+      
+      let json=JSON.stringify({clienteNombreCompleto, clienteDNI,grupoSanguineoNombre,doctorNombreCompleto,tipoResultado, fechaEvaluacion, observaciones, tipoExamen, doctor, adjuntoUrl});
+      let response=await this.clientesService.enviarAlMTCFichaMedica(this.clienteActual.clienteId,json);
+      this.alertDialogService.open('',response.message);
+    }catch(error){
+      this.alertDialogService.open('',error);
+    }
+  }
+
+  /**Actualizar o crear los datos de la ficha medica del cliente llenados en el formulario */
+  async mantenerFichaMedica(datos:any){
+    let {tipoResultado, fechaEvaluacion, observaciones, grupoSanguineo, tipoExamen, doctor}=datos;
+    try{
+      //return console.log(MantenerExamenConduccionComponent.LOG_TAG,fechaEvaluacion);
+      let formData=new FormData();
+      formData.append('tipo_resultado_examen', tipoResultado);
+      formData.append('fecha_evaluacion', fechaEvaluacion);
+      formData.append('grupo_sanguineo_id', grupoSanguineo);
+      formData.append('observaciones', observaciones);
+      formData.append('tipo_examen', tipoExamen);
+      if(doctor!=-1) formData.append('empleados_id', doctor);
+      if(this.adjuntoFile!=null){
+        formData.append('adjunto',this.adjuntoFile,this.adjuntoFile.name);
+      }
+      
+      let response=await this.clientesService.guardarClienteFichaMedica(this.clienteActual.id,formData);
+      let {message}=response;
+      this.alertDialogService.open('',message, 
+      /*onclick*/ ()=>{
+        this.router.navigate(['listar-clientes']);
+      });
+      
+    }catch(error){
+      this.alertDialogService.open('',error);
+    }
   }
 }
