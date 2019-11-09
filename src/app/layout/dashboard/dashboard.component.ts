@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../../router.animations';
+import { ClientesService } from 'src/app/services/clientes.service';
+import { EmpleadosService } from 'src/app/services/empleados.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -10,6 +12,9 @@ import { routerTransition } from '../../router.animations';
 export class DashboardComponent implements OnInit {
     public alerts: Array<any> = [];
     
+    private clientesCantidad=0;
+    private empleadosCantidad=0;
+
      // bar chart
      public barChartOptions: any = {
         scaleShowVerticalLines: false,
@@ -161,8 +166,16 @@ export class DashboardComponent implements OnInit {
 
 
 
-    constructor() {
+    constructor(private empleadosService:EmpleadosService,private clientesService:ClientesService) {
   
+        this.empleadosService.contarEmpleados().then((cantidad:number)=>{
+            this.empleadosCantidad=cantidad;
+        }).catch(()=>{});
+
+        this.clientesService.contarClientes().then((cantidad:number)=>{
+            this.clientesCantidad=cantidad;
+        }).catch(()=>{});
+
         this.alerts.push(
             {
                 id: 1,

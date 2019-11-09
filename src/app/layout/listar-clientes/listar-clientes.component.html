@@ -14,7 +14,7 @@
                     <th>Código</th>
                     <th>Foto</th>
                     <th>Nombre completo</th>
-                    <th>Tomó examen</th>
+                    <th>Nro Identifiacion</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -23,12 +23,12 @@
                     <th scope="row">{{cliente.id}}</th>
                     <td><img [src]="cliente.fotoAdjunto" class="foto-cliente" alt=""></td>
                     <td>{{cliente.getNombreCompleto()}}</td>
-                    <td>{{(cliente.haTomadoExamen()?'Sí':'No')}}</td>
+                    <td>{{cliente.nroIdentificacion}}</td>
                     <td>
-                        <button type="button" class="btn btn-warning btn-edit" placement="bottom" ngbTooltip="Examen de manejo" (click)=" seleccionarClienteParaEditarExamenConduccion(cliente)">
+                        <button *ngIf="mostrarExamenDeReglasBoton" type="button" class="btn btn-warning btn-edit" placement="bottom" ngbTooltip="Examen de reglas" (click)=" seleccionarClienteParaEditarExamenConduccion(cliente)">
                             <i class="fa fa-car" aria-hidden="true"></i>
                         </button>&nbsp;
-                        <button type="button" class="btn btn-danger btn-edit" placement="bottom" ngbTooltip="Ficha médica" (click)=" seleccionarClienteParaMantenerFichaMedica(cliente)">
+                        <button *ngIf="mostrarFichaMedicaBoton" type="button" class="btn btn-danger btn-edit" placement="bottom" ngbTooltip="Ficha médica" (click)=" seleccionarClienteParaMantenerFichaMedica(cliente)">
                             <i class="fa fa-heartbeat" aria-hidden="true"></i>
                         </button>&nbsp;
                         <button class="btn btn-success btn-edit" (click)=" seleccionarClienteAEditar(cliente)">

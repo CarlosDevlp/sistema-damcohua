@@ -1,22 +1,28 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from '../../../models/menu_item';
+import { SeguridadService } from 'src/app/services/seguridad.service';
+import { Usuario } from 'src/app/models/usuario';
+import { Subscription } from 'rxjs';
+import { STRINGS_VALUES } from 'src/environments/environment';
 
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
+    
     isActive: boolean;
     collapsed: boolean;
     showMenu: string;
     pushRightClass: string;
+    subscription:Subscription;
     private menusItems=[];
     @Output() collapsedEvent = new EventEmitter<boolean>();
 
-    constructor(private translate: TranslateService, public router: Router) {
+    constructor(private seguridadService:SeguridadService, private translate: TranslateService, public router: Router) {
         this.router.events.subscribe(val => {
             if (
                 val instanceof NavigationEnd &&
@@ -34,12 +40,10 @@ export class SidebarComponent implements OnInit {
         this.showMenu = '';
         this.pushRightClass = 'push-right';
 
-        this.menusItems.push(new MenuItem('Dashboard','/dashboard','fa-dashboard'));
-        this.menusItems.push(new MenuItem('Clientes','clientes','fa-address-card',
-                                [
-                                    new MenuItem('Listar Clientes','/listar-clientes','fa-list-alt'),
-                                    new MenuItem('Agregar Cliente','/mantener-cliente','fa-plus')
-                                ]));
+        this.subscription=this.seguridadService.usuarioObservable.subscribe((usuario:Usuario)=>{
+            this.setearMenuSegunTipoUsuario(usuario.empleado.tipoEmpleadoId);
+        });
+
         /*this.menusItems.push(new MenuItem('Doctores','doctores','fa-user-md',
                                 [
                                     new MenuItem('Listar Doctores','/listar-doctores','fa-list-alt'),
@@ -49,11 +53,29 @@ export class SidebarComponent implements OnInit {
                                     new MenuItem('Listar Citas','/listar-citas','fa-list-alt'),
                                     new MenuItem('Agregar Cita','/mantener-cita','fa-plus')
                                 ]));*/
-        this.menusItems.push(new MenuItem('Empleados','empleados','fa-users',
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    setearMenuSegunTipoUsuario(tipoEmpleadoId:number){
+        this.menusItems=[];
+        this.menusItems.push(new MenuItem('Dashboard','/dashboard','fa-dashboard'));
+        this.menusItems.push(new MenuItem('Clientes','clientes','fa-address-card',
+                                [
+                                    new MenuItem('Listar Clientes','/listar-clientes','fa-list-alt'),
+                                    new MenuItem('Agregar Cliente','/mantener-cliente','fa-plus')
+                                ]));
+        //solo el administrador puede acceder al menu de empleados
+        if(tipoEmpleadoId==STRINGS_VALUES.TIPOS_EMPLEADO.ADMINISTRADOR){
+            this.menusItems.push(new MenuItem('Empleados','empleados','fa-users',
                                 [
                                     new MenuItem('Listar Empleados','/listar-empleados','fa-list-alt'),
                                     new MenuItem('Agregar Empleado','/mantener-empleado','fa-plus')
                                 ]));
+        }
+        
     }
 
 

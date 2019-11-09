@@ -50,14 +50,26 @@ export const STRINGS_VALUES={
   "API_EMPLEADO":(id:number)=>{
     return API_BASE_URL+'/empleados/'+id;
   },
+  "API_EMPLEADO_CONTAR":API_BASE_URL+'/empleados/count',
 
   //clientes
-  "API_CLIENTES":API_BASE_URL+'/clientes',
+  "API_CLIENTES":API_BASE_URL+'/clientes#formdata',
   "API_CLIENTES_ACTUALIZAR":(id:number)=>{
-    return API_BASE_URL+'/clientes/actualizar/'+id;
+    return API_BASE_URL+'/clientes/actualizar/'+id+'#formdata';
   },
   "API_CLIENTE":(id:number)=>{
     return API_BASE_URL+'/clientes/'+id;
+  },
+  "API_CLIENTES_CONTAR":API_BASE_URL+'/clientes/count',
+
+  //ficha médica
+  "API_FICHA_MEDICA":(id:number)=>{
+    return API_BASE_URL+'/clientes/'+id+'/fichas-medicas#formdata';
+  },
+  
+  //examen de reglas
+  "API_EXAMEN_REGLAS":(id:number)=>{
+    return API_BASE_URL+'/clientes/'+id+'/examenes-reglas#formdata';
   },
 
   //Local Storage
@@ -66,4 +78,14 @@ export const STRINGS_VALUES={
 
   //errores del servidor
   "ERROR_MESSAGE_DEFAULT":'Error de servidor. Inténtelo más tarde',
+
+  //tipos de empleados
+  "TIPOS_EMPLEADO":{
+    'ADMINISTRADOR':1,
+    'DOCTOR':2,
+    'ASISTENTE_POLICLINICO':3,
+    'ASISTENTE_ESCUELA_DE_MANEJO':4,
+    'SOLO_LECTURA':5,
+    'PROFESOR':6
+  }
 }

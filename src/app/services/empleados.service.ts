@@ -23,6 +23,25 @@ export class EmpleadosService {
   }
 
   /**
+   * Contar la cantidad de empleados
+   */
+  public contarEmpleados():Promise<any>{
+    return new Promise<any>(async (resolve,reject)=>{
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
+      try{
+        let response:any=await this.httpClient.get(STRINGS_VALUES.API_EMPLEADO_CONTAR).toPromise();
+        if(response.status=='ok'){
+          let {data}=response;
+          return resolve(data[0].cantidad);
+        }else{
+          errorMessage=response.message;
+        }
+      }catch(err){}
+      return reject(errorMessage);
+    });
+  }
+
+  /**
    * Obtener toda la lista de empleados
    */
   public solicitarEmpleados():Promise<any>{

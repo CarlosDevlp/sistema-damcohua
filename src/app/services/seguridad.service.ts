@@ -117,7 +117,7 @@ export class SeguridadService {
 
   public logearUsuario(username:string, password:string):Promise<any>{    
     return new Promise<any>(async (resolve,reject)=>{
-      let errorMessage='Las credenciales son incorrectas.';
+      let errorMessage=STRINGS_VALUES.ERROR_MESSAGE_DEFAULT;
       try{
         let response:any=await this.httpClient.post(STRINGS_VALUES.API_USUARIO_LOGEAR,{surname: username,password}).toPromise();
         
@@ -140,7 +140,9 @@ export class SeguridadService {
         }else{
           errorMessage=response.message;
         }
-      }catch(err){}
+      }catch(err){
+        errorMessage=err.error.message;
+      }
       return reject(errorMessage);
     });
   }

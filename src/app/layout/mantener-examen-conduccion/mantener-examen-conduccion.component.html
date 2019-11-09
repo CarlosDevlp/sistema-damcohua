@@ -1,11 +1,11 @@
 <div class="mantener-fichamedica">
     <div class="card mb-3">
         <div class="card-header">
-          <span class="panel-title-text" style="font-size:1.6rem">Examen de conducción</span>
+          <span class="panel-title-text" style="font-size:1.6rem">Examen de reglas</span>
         </div>
         <div class="card-body table-responsive">
           <app-simple-cliente-data-card [cliente]="clienteActual"></app-simple-cliente-data-card>
-          <form class="mantener-fichamedica-form" [formGroup]="mantenerEvaluacionConduccionForm" role="form" (ngSubmit)="mantenerEvaluacionConduccion(mantenerEvaluacionConduccionForm.value)">
+          <form class="mantener-fichamedica-form" [formGroup]="mantenerEvaluacionConduccionForm" role="form" (ngSubmit)="mantenerExamenReglas(mantenerEvaluacionConduccionForm.value)">
               <div class="form-content">
                 <fieldset>
                   <legend>Datos de examen</legend>
@@ -28,7 +28,7 @@
   
                     <div class="form-group col-12 col-md-3">
                       <select formControlName="claseCategoria" class="form-control">
-                          <option value="" hidden>Clase categoría</option>
+                          <option value="-1" hidden>Clase categoría</option>
                           <option [value]="claseCategoria.id" *ngFor="let claseCategoria of clasesCategorias">{{claseCategoria.nombre}}</option>
                       </select>
                     </div>
@@ -37,11 +37,8 @@
                         <input type="text" class="form-control input-underline input-lg" placeholder="Restricciones"  formControlName="restricciones" >
                     </div>
   
-                    <fieldset class="form-group col-12 col-md-4">
-                        <label>Adjunto</label>
-                        <input type="file" class="form-control-file">
-                    </fieldset>
-  
+                    <app-file-input-selector class="col-12 col-md-4" label="Adjunto:" ver-file-label="Ver adjunto" [fileURL]="examenReglasActual.adjuntoUrl" (onSelectedFile)="archivoSeleccionado($event)"></app-file-input-selector>
+                  
                   </div>
                   
   

@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Cliente } from 'src/app/models/cliente';
-import { Subscription } from 'rxjs';
-import { SeguridadService } from 'src/app/services/seguridad.service';
 import { TipoDocumento } from 'src/app/models/tipo_documentos';
 import { Genero } from 'src/app/models/genero';
 import { TiposOpcionesService } from 'src/app/services/tipos-opciones.service';
 import { ClientesService } from 'src/app/services/clientes.service';
+import { AlertDialogService } from 'src/app/services/alert-dialog.service';
 
 @Component({
   selector: 'app-mantener-cliente',
@@ -20,15 +19,21 @@ export class MantenerClienteComponent implements OnInit {
   private mantenerClienteForm:FormGroup;
   private clienteId:string;
   private clienteActual:Cliente= Cliente.getEmpty();
-  private tiposDeDocumento:Array<TipoDocumento>;
+  private tiposDocumento:Array<TipoDocumento>;
   private generos:Array<Genero>;
   private modoEdicion:boolean=false;
   private tituloFormulario:string;
   private tituloBotonSubmit:string;
+  private estadosCivil:Array<string>;
+  private clienteFotoFile:File;
+  private clienteAdjuntoFile:File;
 
-  constructor(private clientesService:ClientesService,private tiposOpcionesService:TiposOpcionesService,private formBuilder: FormBuilder, private router:Router, private route: ActivatedRoute) { }
+  constructor(private alertDialogService:AlertDialogService,private clientesService:ClientesService,private tiposOpcionesService:TiposOpcionesService,private formBuilder: FormBuilder, private router:Router, private route: ActivatedRoute) { }
 
   async ngOnInit() {
+
+    this.estadosCivil=['Soltero','Casado','Conviviendo','Divorciado'];
+
     this.obtenerParametroIdCliente();
     this.configurarLabelsDeFormulario();
     this.setearValidadorDeFormulario();
@@ -36,14 +41,15 @@ export class MantenerClienteComponent implements OnInit {
       await this.obtenerClienteAEditar();
       this.setearValidadorDeFormulario();
     }
-    this.tiposDeDocumento=await this.tiposOpcionesService.obtenerTiposDocumento();
+    this.tiposDocumento=await this.tiposOpcionesService.obtenerTiposDocumento();
     this.generos=await this.tiposOpcionesService.obtenerGeneros();
     
   }
 
   async obtenerClienteAEditar(){
     try{
-      this.clienteActual=await this.clientesService.obtenerCliente(this.clienteId);
+      this.clienteActual=this.clientesService.clienteSeleccionado;
+      if(this.clienteActual.clienteId==-1) throw new Error("el cliente seleccionado no puede ser null");
     }catch(e){
       this.router.navigate(['agregar-cliente']);
     }
@@ -51,19 +57,33 @@ export class MantenerClienteComponent implements OnInit {
   }
 
   setearValidadorDeFormulario(){
-    let {genero,tipoDocumento,donacionOrganos}=this.clienteActual;
+    let {apellidoPaterno,apellidoMaterno,email,nombres,telefonos,nroIdentificacion,pais,provincia,departamento,direccion}=this.clienteActual;
+    let {donacionOrganos,nroLicenciaConducir, generoId, tipoDocumentoId, fechaNacimiento, estadoCivil}=this.clienteActual;
+    let validadQueSeaSoloTexto=Validators.pattern('[a-zA-Z ]*');
     let validadores:any={
-      password:['',[Validators.required,Validators.minLength(6),this.validarSiElCampoEstaVacio]],
-      passwordRepeat:['',[Validators.required,Validators.minLength(6),this.validarSiElCampoEstaVacio]],
-      genero:[genero.id],
-      tipoDeDocumento:[tipoDocumento.id],
-      donacionOrganos:[donacionOrganos]
+      nombres:[nombres, [Validators.required, Validators.minLength(3), validadQueSeaSoloTexto]],
+      apellidoPaterno:[apellidoPaterno, [Validators.required, Validators.minLength(3), validadQueSeaSoloTexto]],
+      apellidoMaterno:[apellidoMaterno, [Validators.required, Validators.minLength(3), validadQueSeaSoloTexto]],
+      email:[email, [Validators.required,Validators.email]],
+      fechaNacimiento:[fechaNacimiento],
+      telefonos:[telefonos, [Validators.required,Validators.minLength(5)]],
+      genero:[generoId , [Validators.required,this.validarQueHayaSeleccionadoUnaOpcion]],
+      tipoDocumento:[tipoDocumentoId, [Validators.required,this.validarQueHayaSeleccionadoUnaOpcion]],
+      nroIdentificacion:[nroIdentificacion, [Validators.required,Validators.minLength(7)]],
+      pais:[pais, [Validators.required,Validators.minLength(3)]],
+      provincia:[provincia, [Validators.required,Validators.minLength(3)]],
+      direccion:[direccion, [Validators.required,Validators.minLength(5)]],
+      estadoCivil:[estadoCivil, [Validators.required,Validators.minLength(3)]],
+      donacionOrganos:[donacionOrganos],
+      nroLicenciaConducir:[nroLicenciaConducir, [Validators.required, Validators.minLength(3)]]
     };
     this.mantenerClienteForm=this.formBuilder.group(validadores); 
   }
 
-  mantenerCliente(){
 
+  validarQueHayaSeleccionadoUnaOpcion(control: FormControl):any{
+    if(control.value==-1) return {'debe selecciona una opcion':true};
+    return null;
   }
 
   /**
@@ -93,5 +113,64 @@ export class MantenerClienteComponent implements OnInit {
   validarSiElCampoEstaVacio(control: FormControl):any{
     if(! control.value.trim()) return {'el campo no puede estar vacío':true};
     return null;
+  }
+
+  /**
+   * Cuando se seleccione una foto del picker
+   */
+  fotoSeleccionada(foto:File){
+    this.clienteFotoFile=foto;
+  }
+
+/**
+   * Cuando se seleccione un archivo del picker
+   */
+  archivoSeleccionado(archivo:File){
+    this.clienteAdjuntoFile=archivo;
+  }
+
+  async mantenerCliente(datos:any){
+    let {nombres,apellidoPaterno,fechaNacimiento,apellidoMaterno,email,telefonos,genero,tipoDocumento,nroIdentificacion,pais,provincia,direccion}=datos;
+    let {estadoCivil,donacionOrganos,nroLicenciaConducir}=datos;
+    try{
+      let response;
+      let formData=new FormData();
+      formData.append('nombres', nombres);
+      formData.append('apellido_paterno', apellidoPaterno);
+      formData.append('apellido_materno', apellidoMaterno);
+      formData.append('tipo_documento_id', tipoDocumento);
+      formData.append('nro_identificacion', nroIdentificacion);
+      formData.append('genero_id', genero);
+      formData.append('direccion', direccion);
+      formData.append('provincia', provincia);
+      formData.append('departamento', provincia);
+      formData.append('pais', pais);
+      formData.append('fecha_nacimiento', fechaNacimiento);
+      formData.append('email', email);
+      formData.append('telefonos', telefonos);
+      formData.append('estado_civil', estadoCivil);
+      formData.append('donacion_organos', (donacionOrganos?'1':'0'));
+      formData.append('nro_licencia_conducir',nroLicenciaConducir);
+      formData.append('tipo_estado_id','1');
+
+      if(this.clienteFotoFile!=null){
+        formData.append('foto_adjunto',this.clienteFotoFile,this.clienteFotoFile.name);
+      }
+
+      if(this.clienteAdjuntoFile!=null){
+        formData.append('adjunto',this.clienteAdjuntoFile,this.clienteAdjuntoFile.name);
+      }
+      
+      if(this.modoEdicion) response=await this.clientesService.actualizarCliente(this.clienteActual.id,formData);
+      else response=await this.clientesService.registrarCliente(formData);
+      let {message,data}=response;
+      this.alertDialogService.open('',message, 
+      /*onclick*/ ()=>{
+        this.router.navigate(['listar-clientes']);
+      });
+      
+    }catch(error){
+      this.alertDialogService.open('',error);
+    }
   }
 }

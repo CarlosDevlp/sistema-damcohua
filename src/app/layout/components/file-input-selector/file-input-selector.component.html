@@ -1,0 +1,11 @@
+<div class="d-flex flex-wrap align-items-center">
+    <fieldset class="form-group">
+        <label>{{label}}</label>
+        <input #adjuntoPicker class="form-control-file" type="file" 
+              (change)="extractFile(adjuntoPicker.files)" />
+    </fieldset>
+    <a *ngIf="fileURL" [href]="fileURL" target="_blank">
+        <i class="fa fa-file" aria-hidden="true"></i>
+        ({{verFileLabel}})
+    </a>
+</div>

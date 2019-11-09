@@ -19,4 +19,14 @@ export class FichaMedica{
  public static getEmpty(){
     return new FichaMedica('','','','','','','','',GrupoSanguineo.getEmpty());
  }
+
+ setDataFromRequestResponse(data:any){
+    this.fechaEvaluacion=data.fecha_evaluacion;
+    this.codigo=data.id;
+    this.tipoResultado=data.tipo_resultado_examen;
+    this.tipoExamen=data.tipo_examen;   
+    this.observaciones=data.observaciones;
+    this.grupoSanguineoId=data.grupo_sanguineo_id;
+ }
+
 }

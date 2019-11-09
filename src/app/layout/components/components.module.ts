@@ -6,12 +6,14 @@ import { ImageInputSelectorComponent } from './image-input-selector/image-input-
 import { CustomDatatableComponent } from './custom-datatable/custom-datatable.component';
 import { DataTablesModule } from 'angular-datatables';
 import { SimpleClienteDataCardComponent } from './simple-cliente-data-card/simple-cliente-data-card.component';
+import { FileInputSelectorComponent } from './file-input-selector/file-input-selector.component';
 
 @NgModule({
   declarations: [
     ImageInputSelectorComponent,
     CustomDatatableComponent,
-    SimpleClienteDataCardComponent
+    SimpleClienteDataCardComponent,
+    FileInputSelectorComponent
   ],
   imports: [ 
     CommonModule,
@@ -21,7 +23,8 @@ import { SimpleClienteDataCardComponent } from './simple-cliente-data-card/simpl
   exports: [
     ImageInputSelectorComponent,
     CustomDatatableComponent,
-    SimpleClienteDataCardComponent
+    SimpleClienteDataCardComponent,
+    FileInputSelectorComponent
   ]
 })
 export class ComponentsModule {}
