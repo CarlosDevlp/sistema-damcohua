@@ -67,7 +67,7 @@ export class MantenerFichaMedicaComponent implements OnInit {
   setearValidadorDeFormulario(){
     let {empleadoId,grupoSanguineoId,observaciones,codigo,tipoResultado,fechaEvaluacion,tipoExamen}=this.fichamedicaActual;
     let validadores:any={
-      codigo:[codigo],
+      //codigo:[codigo],
       tipoResultado:[tipoResultado],
       fechaEvaluacion:[fechaEvaluacion],
       observaciones:[observaciones],

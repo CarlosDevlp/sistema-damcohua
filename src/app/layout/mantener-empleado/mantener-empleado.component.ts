@@ -62,17 +62,18 @@ export class MantenerEmpleadoComponent implements OnInit {
     let {apellidoPaterno,apellidoMaterno,email,nombres,telefonos,nroIdentificacion,pais,provincia,departamento,direccion}=this.empleadoActual;
     let {generoId,tipoDocumentoId,tipoEmpleadoId, fechaNacimiento}=this.empleadoActual;
     let {username}=this.usuarioActual;
-    let validadQueSeaSoloTexto=Validators.pattern('[a-zA-Z ]*');
+    let validadQueSeaSoloTexto=Validators.pattern('[a-zA-ZáéíóúÁÉÍÓÚ ]*');
+    let validadQueSeaNumero=Validators.pattern('[0-9]*');
     let validadores:any={
       nombres:[nombres, [Validators.required, Validators.minLength(3), validadQueSeaSoloTexto]],
       apellidoPaterno:[apellidoPaterno, [Validators.required, Validators.minLength(3), validadQueSeaSoloTexto]],
       apellidoMaterno:[apellidoMaterno, [Validators.required, Validators.minLength(3), validadQueSeaSoloTexto]],
       email:[email, [Validators.required,Validators.email]],
       fechaNacimiento:[fechaNacimiento],
-      telefonos:[telefonos, [Validators.required,Validators.minLength(5)]],
+      telefonos:[telefonos, [Validators.required,Validators.minLength(9),validadQueSeaNumero]],
       genero:[generoId , [Validators.required,this.validarQueHayaSeleccionadoUnaOpcion]],
       tipoDocumento:[tipoDocumentoId, [Validators.required,this.validarQueHayaSeleccionadoUnaOpcion]],
-      nroIdentificacion:[nroIdentificacion, [Validators.required,Validators.minLength(7)]],
+      nroIdentificacion:[nroIdentificacion, [Validators.required,Validators.minLength(8),validadQueSeaNumero]],
       pais:[pais, [Validators.required,Validators.minLength(3)]],
       provincia:[provincia, [Validators.required,Validators.minLength(3)]],
       direccion:[direccion, [Validators.required,Validators.minLength(5)]],
