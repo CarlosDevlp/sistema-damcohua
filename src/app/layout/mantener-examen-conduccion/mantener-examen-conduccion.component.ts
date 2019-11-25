@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ExamenReglas } from 'src/app/models/evaluacion_conduccion';
 import { ClaseCategoria } from 'src/app/models/clase_categoria';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Cliente } from 'src/app/models/cliente';
 import { ClientesService } from 'src/app/services/clientes.service';
 import { TiposOpcionesService } from 'src/app/services/tipos-opciones.service';
@@ -9,6 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AlertDialogService } from 'src/app/services/alert-dialog.service';
 import { Empleado } from 'src/app/models/empleado';
 import { EmpleadosService } from 'src/app/services/empleados.service';
+import { ValidatorsExpanded } from 'src/app/validators/validators-expanded';
 
 @Component({
   selector: 'app-mantener-examen-conduccion',
@@ -66,13 +67,13 @@ export class MantenerExamenConduccionComponent implements OnInit {
   setearValidadorDeFormulario(){
     let {empleadoId,claseCategoriaId,observaciones,servicioSolicitado,fechaEvaluacion,restricciones, nroReciboOperacion}=this.examenReglasActual;
     let validadores:any={
-      claseCategoria:[claseCategoriaId],
-      observaciones:[observaciones],
-      servicioSolicitado:[servicioSolicitado],
+      claseCategoria:[claseCategoriaId, [ValidatorsExpanded.validarQueHayaSeleccionadoUnaOpcion]],
+      observaciones:[observaciones, [ValidatorsExpanded.validarSiElCampoEstaVacio]],
+      servicioSolicitado:[servicioSolicitado, [ValidatorsExpanded.validarSiElCampoEstaVacio] ],
       fechaEvaluacion:[fechaEvaluacion],
-      restricciones:[restricciones],
-      nroReciboOperacion:[nroReciboOperacion],
-      profesor:[empleadoId]
+      restricciones:[restricciones, [ValidatorsExpanded.validarSiElCampoEstaVacio]],
+      nroReciboOperacion:[nroReciboOperacion, [ValidatorsExpanded.validarSiElCampoEstaVacio, ValidatorsExpanded.validadQueSeaNumero]],
+      profesor:[empleadoId, [ValidatorsExpanded.validarQueHayaSeleccionadoUnaOpcion]]
     };
     this.mantenerEvaluacionConduccionForm=this.formBuilder.group(validadores);
   }

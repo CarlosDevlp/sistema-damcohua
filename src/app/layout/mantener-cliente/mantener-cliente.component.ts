@@ -76,7 +76,7 @@ export class MantenerClienteComponent implements OnInit {
       direccion:[direccion, [Validators.required,Validators.minLength(5)]],
       estadoCivil:[estadoCivil, [Validators.required,Validators.minLength(3)]],
       donacionOrganos:[donacionOrganos],
-      nroLicenciaConducir:[nroLicenciaConducir, [Validators.required, Validators.minLength(3)]]
+      nroLicenciaConducir:[nroLicenciaConducir]
     };
     this.mantenerClienteForm=this.formBuilder.group(validadores); 
   }

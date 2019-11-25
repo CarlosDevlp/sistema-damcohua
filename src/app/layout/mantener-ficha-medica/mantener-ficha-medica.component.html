@@ -1,14 +1,14 @@
 <div class="mantener-fichamedica">
   <div class="card mb-3">
       <div class="card-header">
-        <span class="panel-title-text" style="font-size:1.6rem">Ficha médica</span>
+        <span class="panel-title-text" style="font-size:1.6rem">Ficha médica <i class="fa fa-heartbeat"></i></span>
       </div>
       <div class="card-body table-responsive">
         <app-simple-cliente-data-card [cliente]="clienteActual"></app-simple-cliente-data-card>
         <form class="mantener-fichamedica-form" [formGroup]="mantenerFichaMedicaForm" role="form" (ngSubmit)="mantenerFichaMedica(mantenerFichaMedicaForm.value)">
             <div class="form-content">
               <fieldset>
-                <legend>Datos de ficha médica</legend>
+                <legend>Datos de ficha médica </legend>
                 
                 <div class="d-flex flex-wrap justify-content-between">
                     <div class="form-group col-12 col-md-4">

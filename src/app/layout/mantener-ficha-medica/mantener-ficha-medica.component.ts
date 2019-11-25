@@ -9,7 +9,7 @@ import { Cliente } from 'src/app/models/cliente';
 import { ClientesService } from 'src/app/services/clientes.service';
 import { Empleado } from 'src/app/models/empleado';
 import { AlertDialogService } from 'src/app/services/alert-dialog.service';
-import { MantenerExamenConduccionComponent } from '../mantener-examen-conduccion/mantener-examen-conduccion.component';
+import { ValidatorsExpanded } from 'src/app/validators/validators-expanded';
 
 @Component({
   selector: 'app-mantener-ficha-medica',
@@ -68,12 +68,12 @@ export class MantenerFichaMedicaComponent implements OnInit {
     let {empleadoId,grupoSanguineoId,observaciones,codigo,tipoResultado,fechaEvaluacion,tipoExamen}=this.fichamedicaActual;
     let validadores:any={
       //codigo:[codigo],
-      tipoResultado:[tipoResultado],
+      tipoResultado:[tipoResultado,[ValidatorsExpanded.validarSiElCampoEstaVacio]],
       fechaEvaluacion:[fechaEvaluacion],
-      observaciones:[observaciones],
-      grupoSanguineo:[grupoSanguineoId],
-      tipoExamen:[tipoExamen],
-      doctor:[empleadoId]
+      observaciones:[observaciones, [ValidatorsExpanded.validarSiElCampoEstaVacio]],
+      grupoSanguineo:[grupoSanguineoId,  [ValidatorsExpanded.validarQueHayaSeleccionadoUnaOpcion]],
+      tipoExamen:[tipoExamen, [ValidatorsExpanded.validarSiElCampoEstaVacio]],
+      doctor:[empleadoId, [ValidatorsExpanded.validarQueHayaSeleccionadoUnaOpcion] ]
     };
     this.mantenerFichaMedicaForm=this.formBuilder.group(validadores);
   }
